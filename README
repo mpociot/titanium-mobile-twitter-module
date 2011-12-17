@@ -1,0 +1,23 @@
+Twitter iOS 5 Module for Appcelerator Titanium
+======================
+
+DESCRIPTION
+=======================
+This is a really basic iOS 5 twitter integration.
+It currently only supports the tweetSheet view.
+You can attach images and urls.
+
+Simply download the zip file and integrate the module in your Titanium project.
+
+USAGE
+========================
+var module	= require('de.marcelpociot.twitter');
+module.tweet({
+	message: 	'Hey, this is some cool tweet!',
+	url: 		'http://www.marcelpociot.de',
+	image: 		'http://www.marcelpociot.de/logo.png'
+});
+
+ABOUT THE AUTHOR
+========================
+I'm a web enthusiast located in germany.
