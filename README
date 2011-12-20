@@ -14,10 +14,25 @@ USAGE
 var module	= require('de.marcelpociot.twitter');
 module.tweet({
 	message: 	'Hey, this is some cool tweet!',
-	url: 		'http://www.marcelpociot.de',
-	image: 		'http://www.marcelpociot.de/logo.png'
+	urls: 		['http://www.marcelpociot.de'],
+	images:		['http://www.marcelpociot.de/logo.png'],
+	succes:		function(){
+		alert("Tweet successfully sent");
+	},
+	cancel:		function(){
+		alert("User canceled tweet");
+	},
+	error:		function(){
+		alert("Unable to send tweet");
+	}
 });
+
+TODO
+========================
+The module is currently unable to execute twitter API calls.
+There's still a problem when you want to add multiple images or URLs.
 
 ABOUT THE AUTHOR
 ========================
 I'm a web enthusiast located in germany.
+Follow me on twitter: @marcelpociot

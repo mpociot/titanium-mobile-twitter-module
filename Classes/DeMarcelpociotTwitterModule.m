@@ -69,21 +69,12 @@
 
 -(void)_listenerAdded:(NSString *)type count:(int)count
 {
-	if (count == 1 && [type isEqualToString:@"my_event"])
-	{
-		// the first (of potentially many) listener is being added 
-		// for event named 'my_event'
-	}
+
 }
 
 -(void)_listenerRemoved:(NSString *)type count:(int)count
 {
-	if (count == 0 && [type isEqualToString:@"my_event"])
-	{
-		// the last listener called for event named 'my_event' has
-		// been removed, we can optionally clean up any resources
-		// since no body is listening at this point for that event
-	}
+
 }
 
 #pragma Public APIs
@@ -93,23 +84,60 @@
 {
     ENSURE_UI_THREAD_1_ARG(args);
     ENSURE_SINGLE_ARG(args,NSDictionary);
-    NSString* message          = [args objectForKey:@"message"];
-    NSString* imageString      = [args objectForKey:@"image"];
-    NSString* urlString        = [args objectForKey:@"url"];
+
+    NSString*   message          = [args objectForKey:@"message"];
+    NSArray*    imageArray       = [args objectForKey:@"images"];
+    NSArray*    urlArray         = [args objectForKey:@"urls"];
+    
+    id success      = [args objectForKey:@"success"];
+    id cancel       = [args objectForKey:@"cancel"];
+    id error        = [args objectForKey:@"error"];
+    RELEASE_TO_NIL(successCallback);
+    RELEASE_TO_NIL(cancelCallback);
+    RELEASE_TO_NIL(errorCallback);
+    successCallback = [success retain];
+    cancelCallback  = [cancel retain];
+    errorCallback   = [error retain];
     
     if ([TWTweetComposeViewController canSendTweet])
     {
         TWTweetComposeViewController *tweetSheet = [[TWTweetComposeViewController alloc] init];
+        
+        tweetSheet.completionHandler = ^(TWTweetComposeViewControllerResult res) {
+            if (TWTweetComposeViewControllerResultDone) {
+                if (successCallback!=nil)
+                {
+                    [self _fireEventToListener:@"success" withObject:nil listener:successCallback thisObject:nil];
+                }
+            } else if (TWTweetComposeViewControllerResultCancelled) {
+                if (cancelCallback!=nil)
+                {
+                    [self _fireEventToListener:@"cancel" withObject:nil listener:cancelCallback thisObject:nil];
+                }            }
+            [[TiApp app] hideModalController:tweetSheet animated:YES];
+        };
+
         [tweetSheet setInitialText:message];
-        if( ![imageString isEqualToString:@""] )
-        {
-            [tweetSheet addImage:[TiUtils toImage:imageString proxy:nil]];
+        if( [imageArray count] > 0 ){
+            for(id image in imageArray )
+            {
+                [tweetSheet addImage:[TiUtils toImage:image proxy:nil]];
+            }
         }
-        if( ![urlString isEqualToString:@""] )
+        if( [urlArray count] > 0 )
         {
-            [tweetSheet addURL:[NSURL URLWithString:urlString]];
+            for(NSString* url in urlArray )
+            {
+                [tweetSheet addURL:[TiUtils toURL:url proxy:nil]];
+            }
         }
         [[TiApp app] showModalController:tweetSheet animated:YES];
+    } else 
+    {
+        if (errorCallback!=nil)
+        {
+            [self _fireEventToListener:@"error" withObject:nil listener:errorCallback thisObject:nil];
+        }
     }
 }
 @end

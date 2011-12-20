@@ -8,7 +8,9 @@
 
 @interface DeMarcelpociotTwitterModule : TiModule 
 {
-
+    KrollCallback *successCallback;
+    KrollCallback *cancelCallback;
+    KrollCallback *errorCallback;
 }
 
 @end
