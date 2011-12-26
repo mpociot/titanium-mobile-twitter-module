@@ -53,6 +53,7 @@
 -(void)dealloc
 {
 	// release any resources that have been retained by the module
+    RELEASE_TO_NIL(accountStore);
 	[super dealloc];
 }
 
@@ -79,6 +80,57 @@
 
 #pragma Public APIs
 
+-(void)accounts:(id)args
+{
+    ENSURE_UI_THREAD_1_ARG(args);
+    ENSURE_SINGLE_ARG(args,NSDictionary);
+    
+    id load = [args objectForKey:@"load"];
+    id cancel = [args objectForKey:@"cancel"];
+    RELEASE_TO_NIL(loadCallback);
+    RELEASE_TO_NIL(accessErrorCallback);
+    loadCallback    = [load retain];
+    accessErrorCallback = [cancel retain];
+    if( accountStore == nil ){
+        accountStore = [[ACAccountStore alloc] init];
+    }
+    ACAccountType *accountTypeTwitter =
+    [accountStore
+     accountTypeWithAccountTypeIdentifier:ACAccountTypeIdentifierTwitter];
+    [accountStore accountTypeWithAccountTypeIdentifier:ACAccountTypeIdentifierTwitter];
+    [accountStore requestAccessToAccountsWithType:accountTypeTwitter withCompletionHandler:^(BOOL granted, NSError *error) {
+        if(granted) {
+            dispatch_sync(dispatch_get_main_queue(), ^{
+                NSArray* accounts = [accountStore
+                                 accountsWithAccountType:accountTypeTwitter];
+                
+                if( loadCallback != nil )
+                {
+                    NSMutableDictionary* event = [[NSMutableDictionary alloc] init];
+                    NSMutableArray* accountArray = [[NSMutableArray alloc] init];
+                    for( ACAccount* account in accounts ){
+                        NSDictionary* accountObject = [NSDictionary dictionaryWithObjectsAndKeys:
+                                                       account.username,
+                                                       @"username",
+                                                       account.description,
+                                                       @"description",
+                                                       account.accountDescription,
+                                                       @"accountDescription", nil];
+                        [accountArray addObject:accountObject];
+                    }
+                    [event setValue:accountArray forKey:@"accounts"];
+                    [self _fireEventToListener:@"loadAccount" withObject:event listener:loadCallback thisObject:nil];
+                }
+            });
+        } else {
+            if( accessErrorCallback != nil )
+            {
+                [self _fireEventToListener:@"accessForbidden" withObject:nil listener:accessErrorCallback thisObject:nil];
+            }   
+        }
+    }];
+
+}
 
 -(void)tweet:(id)args
 {

@@ -5,12 +5,17 @@
  * and licensed under the Apache Public License (version 2)
  */
 #import "TiModule.h"
+#import <Accounts/Accounts.h>
 
 @interface DeMarcelpociotTwitterModule : TiModule 
 {
     KrollCallback *successCallback;
     KrollCallback *cancelCallback;
     KrollCallback *errorCallback;
+
+    ACAccountStore *accountStore;
+    KrollCallback *loadCallback;
+    KrollCallback *accessErrorCallback;
 }
 
 @end
