@@ -26,6 +26,19 @@ module.tweet({
 		alert("Unable to send tweet");
 	}
 });
+// To access the accounts:
+module.accounts({
+	load: function(e){
+		for( var i =0; i<e.accounts.length; i++ ){
+			var account = e.accounts[i];
+			alert(account.username);
+			alert(account.description)
+		}
+	},
+	error: function(e){
+		alert("access not granted");
+	}
+});
 
 TODO
 ========================
