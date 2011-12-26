@@ -16,6 +16,9 @@
     ACAccountStore *accountStore;
     KrollCallback *loadCallback;
     KrollCallback *accessErrorCallback;
+    
+    KrollCallback *requestSuccessCallback;
+    KrollCallback *requestErrorCallback;
 }
 
 @end

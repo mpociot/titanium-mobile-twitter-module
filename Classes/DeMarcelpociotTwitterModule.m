@@ -53,7 +53,8 @@
 -(void)dealloc
 {
 	// release any resources that have been retained by the module
-    RELEASE_TO_NIL(accountStore);
+    [accountStore dealloc];
+    [successCallback dealloc];
 	[super dealloc];
 }
 
@@ -120,6 +121,7 @@
                     }
                     [event setValue:accountArray forKey:@"accounts"];
                     [self _fireEventToListener:@"loadAccount" withObject:event listener:loadCallback thisObject:nil];
+                    [accountArray release];
                 }
             });
         } else {
@@ -131,6 +133,52 @@
     }];
 
 }
+
+-(void)request:(id)args
+{
+    ENSURE_UI_THREAD_1_ARG(args);
+    ENSURE_SINGLE_ARG(args,NSDictionary);
+
+    NSString        *urlString      = [args objectForKey:@"url"];
+    ENSURE_STRING(urlString);
+    NSDictionary *params = (NSDictionary*)[args objectForKey:@"params"];
+    ENSURE_DICT(params);
+    
+    //    NSString        *method         = [args objectForKey:@"method"];
+    id success        = [args objectForKey:@"success"];
+    id error          = [args objectForKey:@"error"];
+    RELEASE_TO_NIL(requestSuccessCallback);
+    RELEASE_TO_NIL(requestErrorCallback);
+    requestSuccessCallback  = [success retain];
+    requestErrorCallback    = [error retain];
+    
+    // Do a simple search, using the Twitter API
+    TWRequest *request = [[TWRequest alloc] initWithURL:[NSURL URLWithString:urlString] 
+                                             parameters:nil requestMethod:TWRequestMethodGET];
+    
+    // Notice this is a block, it is the handler to process the response
+    [request performRequestWithHandler:^(NSData *responseData, NSHTTPURLResponse *urlResponse, NSError *error)
+    {
+        if ([urlResponse statusCode] == 200) 
+        {
+            // The response from Twitter is in JSON format
+            // Move the response into a dictionary and print
+            NSError *error;        
+            NSDictionary *dict = [NSJSONSerialization JSONObjectWithData:responseData options:0 error:&error];
+
+            if( requestSuccessCallback != nil ){
+                [self _fireEventToListener:@"requestSuccess" withObject:dict listener:requestSuccessCallback thisObject:nil];
+            }
+        }
+        else
+        {
+            if( requestErrorCallback != nil ){
+                [self _fireEventToListener:@"requestError" withObject:[args objectForKey:@"params"] listener:requestErrorCallback thisObject:nil];
+            }
+        }
+    }];
+}
+
 
 -(void)tweet:(id)args
 {
