@@ -61,7 +61,7 @@ requestButton.addEventListener('click',function(e){
 	module.request({
 		params: {
 			screen_name: 	'marcelpociot',
-			count:			10
+			count:			'10'
 		},
 		url: "http://api.twitter.com/1/statuses/user_timeline.json",
 		method: 'get',

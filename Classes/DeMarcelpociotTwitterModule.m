@@ -142,7 +142,6 @@
     NSString        *urlString      = [args objectForKey:@"url"];
     ENSURE_STRING(urlString);
     NSDictionary *params = (NSDictionary*)[args objectForKey:@"params"];
-    ENSURE_DICT(params);
     
     //    NSString        *method         = [args objectForKey:@"method"];
     id success        = [args objectForKey:@"success"];
@@ -154,7 +153,7 @@
     
     // Do a simple search, using the Twitter API
     TWRequest *request = [[TWRequest alloc] initWithURL:[NSURL URLWithString:urlString] 
-                                             parameters:nil requestMethod:TWRequestMethodGET];
+                                             parameters:params requestMethod:TWRequestMethodGET];
     
     // Notice this is a block, it is the handler to process the response
     [request performRequestWithHandler:^(NSData *responseData, NSHTTPURLResponse *urlResponse, NSError *error)
@@ -164,10 +163,10 @@
             // The response from Twitter is in JSON format
             // Move the response into a dictionary and print
             NSError *error;        
-            NSDictionary *dict = [NSJSONSerialization JSONObjectWithData:responseData options:0 error:&error];
-
+            NSDictionary *response = [NSJSONSerialization JSONObjectWithData:responseData options:NSJSONReadingMutableLeaves error:&error];
+            NSDictionary *event = [NSDictionary dictionaryWithObjectsAndKeys:response,@"response", nil];
             if( requestSuccessCallback != nil ){
-                [self _fireEventToListener:@"requestSuccess" withObject:dict listener:requestSuccessCallback thisObject:nil];
+                [self _fireEventToListener:@"requestSuccess" withObject:event listener:requestSuccessCallback thisObject:nil];
             }
         }
         else
