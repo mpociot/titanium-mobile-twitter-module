@@ -19,6 +19,7 @@
     
     KrollCallback *requestSuccessCallback;
     KrollCallback *requestErrorCallback;
+    
 }
 
 @end

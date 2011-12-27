@@ -29,6 +29,7 @@ tweetButton.addEventListener('click',function(e){
 		}
 	});
 });
+
 var accountsButton	= Ti.UI.createButton({
 	title: 'accounts',
 	top: 70,
@@ -50,6 +51,7 @@ accountsButton.addEventListener('click',function(e){
 		}
 	});
 });
+
 var requestButton	= Ti.UI.createButton({
 	title: 'request',
 	top: 130,
@@ -58,6 +60,7 @@ var requestButton	= Ti.UI.createButton({
 });
 window.add(requestButton);
 requestButton.addEventListener('click',function(e){
+	// This currently only allows UNSIGNED requests!
 	module.request({
 		params: {
 			screen_name: 	'marcelpociot',
@@ -66,10 +69,32 @@ requestButton.addEventListener('click',function(e){
 		url: "http://api.twitter.com/1/statuses/user_timeline.json",
 		method: 'get',
 		success: function(e){
-			alert(e);
+			alert(e.response);
 		},
 		error: function(e){
 			alert(e);
 		}
+	});
+});
+
+var timelineButton	= Ti.UI.createButton({
+	title: 'timeline',
+	top: 190,
+	left: 10,
+	height: 50
+});
+window.add(timelineButton);
+timelineButton.addEventListener('click',function(e){
+	// gets the last 2 entries from the users timeline
+	module.timeline('marcelpociot','2',function(e){
+		// success function
+		var response = e.response;
+		for( var i=0;i < response.length; i++ ){
+			var tweet = response[i];
+			// access the tweet
+			alert(tweet.text);
+		}
+	},function(e){
+		// error function
 	});
 });

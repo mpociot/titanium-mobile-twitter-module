@@ -178,7 +178,7 @@
     }];
 }
 
-
+// Shows the compose tweet view
 -(void)tweet:(id)args
 {
     ENSURE_UI_THREAD_1_ARG(args);
@@ -238,5 +238,32 @@
             [self _fireEventToListener:@"error" withObject:nil listener:errorCallback thisObject:nil];
         }
     }
+}
+
+
+#pragma Preconfigured functions
+-(void)timeline:(id)args
+{
+    NSString *screenName        = [args objectAtIndex:0];
+    NSString *count             = [args objectAtIndex:1];
+    id        success           = [args objectAtIndex:2];
+    id        error             = [args objectAtIndex:3];
+    
+    NSDictionary* paramsDict    = [NSDictionary dictionaryWithObjectsAndKeys:
+                                   screenName,
+                                   @"screen_name",
+                                   count,
+                                   @"count", nil];
+    NSDictionary* requestArgs   = [NSDictionary dictionaryWithObjectsAndKeys:
+                                   @"http://api.twitter.com/1/statuses/user_timeline.json",
+                                   @"url",
+                                   paramsDict,
+                                   @"params",
+                                   success,
+                                   @"success",
+                                   error,
+                                   @"error",
+                                   nil];
+    [self request:requestArgs];
 }
 @end
