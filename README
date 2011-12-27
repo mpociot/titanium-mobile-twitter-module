@@ -42,7 +42,7 @@ module.accounts({
 
 TODO
 ========================
-The module is currently unable to execute twitter API calls.
+Twitter call's are now working, but for the moment only unsigned requests.
 There's still a problem when you want to add multiple images or URLs.
 
 ABOUT THE AUTHOR
