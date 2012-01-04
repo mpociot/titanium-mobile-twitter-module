@@ -10,7 +10,8 @@
 //
 // How to add a Framework (example)
 //
-OTHER_LDFLAGS=$(inherited) -framework Twitter -framework Accounts
+OTHER_LDFLAGS[sdk=iphoneos5*]=$(inherited) -framework Twitter -framework Accounts
+OTHER_LDFLAGS[sdk=iphonesimulator5*]=$(inherited) -framework Twitter -framework Accounts
 //
 // Adding a framework for a specific version(s) of iPhone:
 //
