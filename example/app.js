@@ -18,7 +18,7 @@ tweetButton.addEventListener('click',function(e){
 		message: 	'Hey, this is some cool tweet!',
 		urls: 		['http://www.marcelpociot.de'],
 		images:		['http://www.marcelpociot.de/logo.png'],
-		succes:		function(){
+		success:	function(){
 			alert("Tweet successfully sent");
 		},
 		cancel:		function(){
