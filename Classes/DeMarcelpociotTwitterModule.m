@@ -202,17 +202,18 @@
     {
         TWTweetComposeViewController *tweetSheet = [[TWTweetComposeViewController alloc] init];
         
-        tweetSheet.completionHandler = ^(TWTweetComposeViewControllerResult res) {
-            if (TWTweetComposeViewControllerResultDone) {
+        tweetSheet.completionHandler = ^(TWTweetComposeViewControllerResult result) {
+            if (result == TWTweetComposeViewControllerResultDone) {
                 if (successCallback!=nil)
                 {
                     [self _fireEventToListener:@"success" withObject:nil listener:successCallback thisObject:nil];
                 }
-            } else if (TWTweetComposeViewControllerResultCancelled) {
+            } else if (result == TWTweetComposeViewControllerResultCancelled) {
                 if (cancelCallback!=nil)
                 {
                     [self _fireEventToListener:@"cancel" withObject:nil listener:cancelCallback thisObject:nil];
-                }            }
+                }            
+            }
             [[TiApp app] hideModalController:tweetSheet animated:YES];
         };
 
