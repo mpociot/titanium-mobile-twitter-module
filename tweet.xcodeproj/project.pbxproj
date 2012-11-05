@@ -22,7 +22,7 @@
 /* End PBXAggregateTarget section */
 
 /* Begin PBXBuildFile section */
-		1E0F5017149D273F009DF003 /* Twitter.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1E0F5016149D273F009DF003 /* Twitter.framework */; };
+		1E0F5017149D273F009DF003 /* Twitter.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1E0F5016149D273F009DF003 /* Twitter.framework */; settings = {ATTRIBUTES = (Weak, ); }; };
 		24DD6CF91134B3F500162E58 /* DeMarcelpociotTwitterModule.h in Headers */ = {isa = PBXBuildFile; fileRef = 24DD6CF71134B3F500162E58 /* DeMarcelpociotTwitterModule.h */; };
 		24DD6CFA1134B3F500162E58 /* DeMarcelpociotTwitterModule.m in Sources */ = {isa = PBXBuildFile; fileRef = 24DD6CF81134B3F500162E58 /* DeMarcelpociotTwitterModule.m */; };
 		24DE9E1111C5FE74003F90F6 /* DeMarcelpociotTwitterModuleAssets.h in Headers */ = {isa = PBXBuildFile; fileRef = 24DE9E0F11C5FE74003F90F6 /* DeMarcelpociotTwitterModuleAssets.h */; };
